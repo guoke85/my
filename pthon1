@@ -1,0 +1,40 @@
+
+import numpy as np
+bias = 1
+w = 1
+learn_rate = 0.1
+data_set = np.loadtxt("data.txt")
+ 
+x = data_set[0:1, :]
+x = np.array(x)
+x = x.reshape(-1, 1)
+y = data_set[1:, :]
+y = np.array(y)
+y = y.reshape(-1, 1)
+mean = np.mean(x)
+variance = np.std(x)
+ 
+for i in range(14):         # 量化为标准高斯分布
+    x[i] = (x[i]-mean)/variance
+ 
+old_loss = 0
+loss = 0
+ 
+for i in range(14):
+    loss += (x[i]*w+bias-y[i])*(x[i]*w+bias-y[i])
+ 
+while abs(loss - old_loss) > 0.00001:
+    dew = 0
+    for i in range(14):                # 计算θ1梯度
+        dew += (x[i]*w-y[i])*x[i]
+    w = w - dew*learn_rate
+    dew = 0
+    for i in range(14):                # 计算θ0梯度
+        dew += (x[i]*w+bias-y[i])
+    bias = bias - dew*learn_rate
+    old_loss = loss
+    loss = 0
+    for i in range(14):
+        loss += (x[i]*w+bias-y[i])*(x[i] * w +bias- y[i])
+    print(old_loss)
+print(((2014-mean)/variance)*w+bias)
